@@ -1,0 +1,24 @@
+var express = require("express");
+var app = express();
+var QRCode = require("qrcode");
+// express to initialize the server
+
+app.get("/api/qr/:tableId", async (req, res) => {
+  const tableId = req.params.tableId;
+  const tableURl = `http://localhost:5173/menu/${tableId}`;
+  try {
+    QRCode.toDataURL(tableURl, (err, url) => {
+      if (err) {
+        res.status(500).json({ Message: "Error Generating QR Code" });
+      } else {
+        res.json({ qrCodeUrl: url });
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ Message: "Error Generating QR Code" });
+  }
+});
+
+app.listen(5001, () => {
+  console.log("Listening to port 5001");
+});
